@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Identify Sample</title>
+
+    <style type="text/css">
+        body {
+            font-family: sans-serif;
+        }
+        #map {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+        #show {
+            right: 20px;
+            top: 20px;
+            background-color: #FFFFFF;
+            border: 1px solid #2D2F37;
+            border-radius: 3px;
+            height: 100px;
+            padding: 15px;
+            position: fixed;
+            width: 290px;
+            vertical-align: middle;
+        }
+        .loadingWidget {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: White url('https://developer.nostramap.com/developer/V2/images/loader.gif') no-repeat fixed center center;
+            filter: alpha(opacity=60);
+            opacity: 0.6;
+            z-index: 10000;
+            vertical-align: middle;
+            top: 0px;
+            left: 0px;
+        }
+          .stage-value {
+            float: left;
+            background: #fff;
+            padding-top: 4px;
+            padding-bottom: 3px;
+            border: 1px solid #adadad;
+            margin-right: 10px;
+            width: 40px;
+            text-align: center;
+            font: 13.3333px Arial;
+        }
+
+    </style>
+        <script type="text/javascript" src="//api.nostramap.com/nostraapi/v2.0?key=G9we4iko2qRz2V73pvH)6WyiWIMLagrkneT2mjnQUrHkfe9Zh1aSSl9oY29d7Ea3Bpaw7UIZR1eMzTrkuJiLmKm=====2"></script>
+
+    <script type="text/javascript">
+        
+            
+        var initExtent, map, point, lat, lon, pointLayer, mp;
+                        var currentType = "point";
+                        var points = [];
+                        var lstLabel = [];
+                        var isFirstLoad = true;
+
+        nostra.onready = function () {
+            initialize();
+        };
+
+        function initialize() {
+            // document.getElementById('country').value = "TH";
+            id = "TH"; 
+
+            map = new nostra.maps.Map("map", {
+                id: "mapTest",
+                logo: true,
+                scalebar: true,
+                basemap: "streetmap",
+                slider: true,
+                level: 15,
+                lat: 13.722944,
+                lon: 100.530449
+            });
+
+
+                
+          
+            pointLayer = new nostra.maps.layers.GraphicsLayer(map, { id: "pointLayer", mouseOver: false });
+                        map.addLayer(pointLayer);
+                    
+                    
+            map.events.load = function () {
+                hideLoading();
+            };
+            map.events.click = function (e) {
+                showLoading();
+                var lat = e.mapPoint.y;
+                var lon = e.mapPoint.x;
+                iden = new nostra.services.Search.Identify({ lat: lat, lon: lon, country: id });
+                iden.execute(function (result) {
+                    hideLoading();
+
+                    if (result.results && result.results.length > 0) {
+                        var No = "No: " + ((result.results[0].No) ? result.results[0].No : "-");
+                        var Distance = "<br />Distance: " + ((result.results[0].Dist) ? parseFloat(result.results[0].Dist).toFixed(2) : parseFloat(result.results[0].dist).toFixed(2));
+                        var Catcode = "<br />CatCode: " + ((result.results[0].CatCode) ? result.results[0].CatCode : "-");
+                        var NostraId = "<br />Nostraid: " + ((result.results[0].NostraId) ? result.results[0].NostraId : "-");
+                        var HouseNo = "<br />HouseNo: " + ((result.results[0].HouseNo) ? result.results[0].HouseNo : "-");
+                        var Name_L = "<br />Name_L: " + ((result.results[0].Name_L) ? result.results[0].Name_L : "-");
+                        var Name_E = "<br />Name_E: " + ((result.results[0].Name_E) ? result.results[0].Name_E : "-");
+                        var Branch_L = "<br />Branch_L: " + ((result.results[0].Branch_L) ? result.results[0].Branch_L : "-");
+                        var Branch_E = "<br />Branch_E: " + ((result.results[0].Branch_E) ? result.results[0].Branch_E : "-");
+                        var AdminLevel1_L = "<br />AdminLevel1_L: " + ((result.results[0].AdminLevel1_L) ? result.results[0].AdminLevel1_L : "-");
+                        var AdminLevel1_E = "<br />AdminLevel1_E: " + ((result.results[0].AdminLevel1_E) ? result.results[0].AdminLevel1_E : "-");
+                        var AdminLevel2_L = "<br />AdminLevel2_L: " + ((result.results[0].AdminLevel2_L) ? result.results[0].AdminLevel2_L : "-");
+                        var AdminLevel2_E = "<br />AdminLevel2_E: " + ((result.results[0].AdminLevel2_E) ? result.results[0].AdminLevel2_E : "-");
+                        var AdminLevel3_L = "<br />AdminLevel3_L: " + ((result.results[0].AdminLevel3_L) ? result.results[0].AdminLevel3_L : "-");
+                        var AdminLevel3_E = "<br />AdminLevel3_E: " + ((result.results[0].AdminLevel3_E) ? result.results[0].AdminLevel3_E : "-");
+                        var AdminLevel4_L = "<br />AdminLevel4_L: " + ((result.results[0].AdminLevel4_L) ? result.results[0].AdminLevel4_L : "-");
+                        var AdminLevel4_E = "<br />AdminLevel4_E: " + ((result.results[0].AdminLevel4_E) ? result.results[0].AdminLevel4_E : "-");
+                        var Postcode = "<br />Postcode: " + ((result.results[0].PostCode) ? result.results[0].PostCode : "-");
+                        var Telephone = "<br />Telephone: " + ((result.results[0].Telephone) ? result.results[0].Telephone : "-");
+
+                        var strAdminCode1 = "";
+                        var strAdminCode2 = "";
+                        var strAdminCode3 = "";
+                        if (result.results[0].AdminLevel1Code != null) {
+                            strAdminCode1 = result.results[0].AdminLevel1Code;
+                        }
+
+                        if (result.results[0].AdminLevel2Code != null) {
+                            strAdminCode2 = result.results[0].AdminLevel2Code;
+                        }
+
+                        if (result.results[0].AdminLevel3Code != null) {
+                            strAdminCode3 = result.results[0].AdminLevel3Code;
+                        }
+
+                        var adminLevel1Code = "<br />AdminLevel1Code: " + ((strAdminCode1) ? strAdminCode1 : "-");
+                        var adminLevel2Code = "<br />AdminLevel2Code: " + ((strAdminCode2) ? strAdminCode2 : "-");
+                        var adminLevel3Code = "<br />AdminLevel3Code: " + ((strAdminCode3) ? strAdminCode3 : "-");
+
+                        map.map.infoWindow.setTitle("Identify Result");
+                        map.map.infoWindow.setContent(No + Distance + Catcode + NostraId + HouseNo + Name_L + Name_E + Branch_L + Branch_E + AdminLevel1_L + AdminLevel1_E
+                        + AdminLevel2_L + AdminLevel2_E + AdminLevel3_L + AdminLevel3_E + AdminLevel4_L + AdminLevel4_E + Postcode + Telephone + adminLevel1Code + adminLevel2Code + adminLevel3Code);
+                        map.map.infoWindow.show(e.screenPoint, map.map.getInfoWindowAnchor(e.screenPoint));
+                   
+                                
+                    var pointMarker = new nostra.maps.symbols.Marker({ url: "https://krittin1.github.io/images/logo.png", width: 60, height: 60, attributes: { POI_NAME: "TestAttr", POI_ROAD: "TestAttr" }});
+                    var g = pointLayer.addMarker(lat, lon, pointMarker);
+                        
+                  
+                    
+                   
+                    } else {
+                        alert("Not Found : ไม่พบข้อมูล")
+                    }
+                });
+            };
+        }
+            
+      
+                    
+
+
+        function showLoading() {
+            document.getElementById("dlgLoading").style.display = "block";
+        }
+        function hideLoading() {
+            document.getElementById("dlgLoading").style.display = "none";
+        }
+        function switchCountry() {
+            id = document.getElementById('country').value;
+            map.country = id;
+            map.level = null;
+            map.lat = null;
+            map.lon = null;
+            map.removeAllLayers();
+            var streetMapLayer = new nostra.maps.layers.StreetMap(map);
+            map.addLayer(streetMapLayer);
+            document.getElementById('divCountry').innerHTML = document.getElementById('country').value;
+        }
+    </script>
+    </head>
+    <body>
+    <div id="dlgLoading" class="loadingWidget">
+    </div>
+    <div id="map">
+    </div>
+    <div id="show">
+        <div style="margin: 5px;">
+            <div style="float:left;">
+                country :&nbsp;
+            </div>
+            
+            <div class="cell stage-value" id="divCountry">TH</div>
+            <select id="country" onchange="switchCountry();" style="height:24px; width: 130px;">
+                <option value="BN">Brunei</option>
+                <option value="KH">Cambodia</option>
+                <option value="ID">Indonesia</option>
+                <option value="LA">Laos</option>
+                <option value="MY">Malaysia</option>
+                <option value="MM">Myanmar</option>
+                <option value="PH">Philippines</option>
+                <option value="SG">Singapore</option>
+                <option value="TH" selected>Thailand</option>
+                <option value="VN">Vietnam</option>
+            </select>
+            <div>
+                <br /> กรุณาคลิกบนแผนที่เพื่อสอบถามตำแหน่ง <br /> Please click on the map to identify map
+            </div>
+            
+        </div>
+    </div>
+    </body>
+</html>
